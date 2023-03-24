@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import plotly
 
 
 
@@ -80,7 +81,7 @@ countries = ['United States', 'India', 'Mexico', 'France']
 country_cases = df.loc[df['location'].isin(countries)]
 country_cases = country_cases.groupby(['location', 'date'])['new_cases_smoothed_per_million'].sum().reset_index()
 
-fig = px.line(country_cases, x='date', y='new_cases_smoothed_per_million', color='location', title='Daily New COVID-19 Cases')
+fig = plotly.line(country_cases, x='date', y='new_cases_smoothed_per_million', color='location', title='Daily New COVID-19 Cases')
 fig.update_layout(
     xaxis_title='Date',
     yaxis_title='new_cases_smoothed_per_million',
