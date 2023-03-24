@@ -2,24 +2,26 @@ import streamlit as st
 import pandas as pd
 import plotly
 
-df = pd.read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv")
-###
-df = df[(df["location"] == "Mexico") & (df["people_fully_vaccinated"].notnull())]
+##
+import pandas as pd
+import streamlit as st
 
-# Convert the date column to a datetime object
-df["date"] = pd.to_datetime(df["date"])
+df = pd.read_csv('https://covid.ourworldindata.org/data/owid-covid-data.csv', 
+                 usecols = ['continent', 'location', 'new_cases_per_million', 'date'])
 
-st.title("COVID-19 Vaccination Data for Mexico")
-st.write("This app displays the number of people fully vaccinated against COVID-19 in Mexico over time.")
-    
-# Create a line chart using Altair
-chart = alt.Chart(df).mark_line().encode(
-   x=alt.X("date:T", title="Date"),
-   y=alt.Y("people_fully_vaccinated:Q", title="People Fully Vaccinated")
-).properties(
-     width=800,
-     height=500
-)
+# Select and filter by Continent
+df = df[df['continent'].notna()]
+continent_filter = st.selectbox("Select the Continent", pd.unique(df["continent"]))
+df = df[df["continent"] == continent_filter]
+df = df.drop(columns='continent')
+
+# Create Matrix with location x date
+df = df.pivot(index='date', columns='location')
+df.columns = [item[1] for item in list(df.columns.to_flat_index())]
+
+# Create dashboard
+st.title("New Covid-19 cases per million per country")
+st.line_chart(df)
 
 
 df = pd.read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv")
