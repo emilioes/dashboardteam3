@@ -33,8 +33,9 @@ Press your start button and type "cmd".
 Alternativelly Shift + right click on the folder you want and click on "open a command prompt here".
 
 ##### 2. Clone the repository in the desired folder with the following command:
+```
 git clone https://github.com/emilioes/dashboardteam3.git
-
+```
 ##### 3. Go into the created  folder :
 ```
 cd dashboardteam3
