@@ -74,9 +74,9 @@ chart = alt.Chart(df).mark_line().encode(
 # Display the chart in the Streamlit app
 st.altair_chart(chart, use_container_width=True)
 
-
+df = pd.read_csv("https://raw.githubusercontent.com/owid/covid-19-data/master/public/data/owid-covid-data.csv")
 ###
-countries = ['United States', 'India', 'Brazil', 'Russia', 'United Kingdom']
+countries = ['United States', 'India', 'Mexico', 'France']
 country_cases = df.loc[df['location'].isin(countries)]
 country_cases = country_cases.groupby(['location', 'date'])['new_cases_smoothed_per_million'].sum().reset_index()
 
