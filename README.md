@@ -28,14 +28,14 @@ The data use for this project was obtained from the following Github repository 
 ## Installation guidelines
 For windows users the step to create an environment are the following:
 
-### 1. Open the command prompt.
+##### 1. Open the command prompt.
 Press your start button and type "cmd".
 Alternativelly Shift + right click on the folder you want and click on "open a command prompt here".
 
-### 2. Clone the repository in the desired folder with the following command:
+##### 2. Clone the repository in the desired folder with the following command:
 git clone https://github.com/emilioes/dashboardteam3.git
 
-### 3. Go into the created  folder :
+##### 3. Go into the created  folder :
 ```
 cd dashboardteam3
 ```
@@ -44,15 +44,15 @@ Then, to  create an environment run :
 python -m venv env
 ```
 
-### 4. To activate the environment run the:
+##### 4. To activate the environment run the:
 ```
 env\Scripts\activate
 ```
-### 5. To install the requiered package  for this project run :
+##### 5. To install the requiered package  for this project run :
 ```
 pip install -r requirements.txt
 ```
-Additional: If you want  to close the environment run : 
+##### Additional: If you want  to close the environment run : 
 ```
 deactivate
 ```
