@@ -23,7 +23,8 @@ The data use for this project was obtained from the following Github repository 
 - Pandas.
 - Matplotlib.
 - <a href="https://streamlit.io/">Streamlit</a>. 
-- Numpy
+- Numpy.
+- Plotly Express.
 
 ## Installation guidelines
 For windows users the step to create an environment are the following:
