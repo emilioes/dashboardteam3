@@ -92,8 +92,8 @@ else:
         df[metric_col] = df.groupby('location')[metric_col].rolling(7).mean().reset_index(0, drop=True)
 
 #country = st.sidebar.selectbox('Select a country', df['location'].unique())
-#country = st.sidebar.selectbox('Select a country', ['Mexico', 'France', 'India'])
-country = st.sidebar.multiselect("Select countries", ['Mexico', 'France', 'India'])
+country = st.sidebar.selectbox('Select a country', ['Mexico', 'France', 'India'])
+#country = st.sidebar.multiselect("Select countries", ['Mexico', 'France', 'India'])
 
 date_range = st.sidebar.date_input('Select a date range', [df['date'].min(), df['date'].max()])
 start_date = pd.to_datetime(date_range[0])
