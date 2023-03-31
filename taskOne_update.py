@@ -25,7 +25,7 @@ chart_type = st.sidebar.selectbox("Chart type:", ('Daily Cases', 'Daily Deaths')
 df = pd.DataFrame()
 if chart_type == 'Daily Cases':
     title = "Daily New Cases by Country"
-    df = df_cases
+    df = df_date
 else:
     title = "Daily New Deaths by Country"
     df = df_deaths
