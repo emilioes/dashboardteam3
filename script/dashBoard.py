@@ -92,7 +92,8 @@ else:
         df[metric_col] = df.groupby('location')[metric_col].rolling(7).mean().reset_index(0, drop=True)
 
 #country = st.sidebar.selectbox('Select a country', df['location'].unique())
-country = st.sidebar.selectbox('Select a country', ['Mexico', 'France', 'India'])
+#country = st.sidebar.selectbox('Select a country', ['Mexico', 'France', 'India'])
+country = st.sidebar.multiselect("Select countries", ['Mexico', 'France', 'India'])
 
 date_range = st.sidebar.date_input('Select a date range', [df['date'].min(), df['date'].max()])
 start_date = pd.to_datetime(date_range[0])
@@ -101,6 +102,8 @@ end_date = pd.to_datetime(date_range[1])
 min_date = df['date'].min().date()
 max_date = df['date'].max().date()
 start_date, end_date = st.sidebar.select_slider('Select a date range', options=pd.date_range(start=min_date, end=max_date, freq='D'), value=(min_date, max_date))
+start_date = start_date.date()
+end_date = end_date.date()
 
 # Filter the data based on the selected metric, country, and date range
 filtered_data = df[(df['location'] == country) & (df['date'] >= start_date) & (df['date'] <= end_date)][['date', metric_col]]
