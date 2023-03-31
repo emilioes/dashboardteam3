@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 # data
 url = 'https://covid.ourworldindata.org/data/owid-covid-data.csv'
 df = pd.read_csv(url)
-countries = ['Mexico', 'France', 'India']
+countries = ['Mexico', 'France', 'India','China','Brazil', 'Pakistan', 'Germany']
 df = df[df['location'].isin(countries)]
 
 # to date format
@@ -45,7 +45,7 @@ else:
 
 #country = st.sidebar.selectbox('Select a country', df['location'].unique())
 #country = st.sidebar.selectbox('Select a country', ['Mexico', 'France', 'India'])
-country = st.sidebar.multiselect("Select countries", df['location'].unique())
+country = st.sidebar.multiselect("Select countries", df['location'].unique(), default=countries)
 
 date_range = st.sidebar.date_input('Select a date range', [df['date'].min(), df['date'].max()])
 start_date = pd.to_datetime(date_range[0])
@@ -53,9 +53,9 @@ end_date = pd.to_datetime(date_range[1])
 
 min_date = df['date'].min().date()
 max_date = df['date'].max().date()
-start_date, end_date = st.sidebar.select_slider('Select a date range', options=pd.date_range(start=min_date, end=max_date, freq='D'), value=(min_date, max_date))
-start_date = start_date.strftime('%Y-%m-%d')
-end_date = end_date.strftime('%Y-%m-%d')
+#start_date, end_date = st.sidebar.select_slider('Select a date range', options=pd.date_range(start=min_date, end=max_date, freq='D'), value=(min_date, max_date))
+#start_date = start_date
+#end_date = end_date
 
 # Filter the data based on the selected metric, country, and date range
 #filtered_data = df[(df['location'].isin(countries)) & (df['date'] >= start_date) & (df['date'] <= end_date)][['date', metric_col]]
