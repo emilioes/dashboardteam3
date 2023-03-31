@@ -58,7 +58,7 @@ start_date = start_date.strftime('%Y-%m-%d')
 end_date = end_date.strftime('%Y-%m-%d')
 
 # Filter the data based on the selected metric, country, and date range
-filtered_data = df[(df['location'].isin(countries)) & (df['date'] >= start_date) & (df['date'] <= end_date)][['date', metric_col]]
+#filtered_data = df[(df['location'].isin(countries)) & (df['date'] >= start_date) & (df['date'] <= end_date)][['date', metric_col]]
 
 # Graph for one country
 ##fig = go.Figure()
@@ -67,9 +67,14 @@ filtered_data = df[(df['location'].isin(countries)) & (df['date'] >= start_date)
 ##st.plotly_chart(fig)
 
 ## Graph multiple countries
+data = df[(df['location'].isin(countries)) & (df['date'] >= start_date) & (df['date'] <= end_date)]
+
+# Create the graph using Plotly
 fig = go.Figure()
+
 for country in countries:
-    data = filtered_data[filtered_data['location'] == country]
-    fig.add_trace(go.Scatter(x=data['date'], y=data[metric_col], mode='lines', name=title + ' in ' + country))
+    filtered_data = data[data['location'] == country][['date', metric_col]]
+    fig.add_trace(go.Scatter(x=filtered_data['date'], y=filtered_data[metric_col], mode='lines', name=country))
+
 fig.update_layout(title=title + ' in ' + ', '.join(countries))
 st.plotly_chart(fig)
