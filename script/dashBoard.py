@@ -72,4 +72,6 @@ for country in countries:
     data = filtered_data[filtered_data['location'] == country]
     fig.add_trace(go.Scatter(x=data['date'], y=data[metric_col], mode='lines', name=title + ' in ' + country))
 fig.update_layout(title=title + ' in ' + ', '.join(countries))
+fig.update_xaxes(title_text='Date')
+fig.update_yaxes(title_text=title)
 st.plotly_chart(fig)
