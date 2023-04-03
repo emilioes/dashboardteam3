@@ -108,6 +108,9 @@ streamlit run script/dashBoard.py
 Let it run, your browser should open a new page with your dashboard.
 If not, check your command prompt the link to your local dashboard will be printed, just copy it and past it to your browser.
 
+## Streamlit Cloud Integration
+The URL of the COVID-19 dashboard is given here: <a href="http://localhost:8501/">LOCAL URL</a>
+
 ## Contribution
 Feel free to fork the project, and make changes and pull request.
 
