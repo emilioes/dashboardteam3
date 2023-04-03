@@ -61,6 +61,9 @@ deactivate
 ## Instructions
 How to run the dashboard locally. **To be done later**
 
+## Streamlit Cloud Integration
+The URL of the COVID-19 dashboard is given here: <a href="http://localhost:8501/">LOCAL URL</a>
+
 ## Contribution
 Feel free to fork the project, and make changes and pull request.
 
