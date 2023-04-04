@@ -98,7 +98,6 @@ deactivate
 
 
 ## Instructions
-How to run the dashboard locally. **To be done later**
 If you want to run the dashboard on your local machine, (for testing and debuging mainly), it's quite easy !
 Make sure you created and activated your environment with the step above.
 Once it's done simply run :

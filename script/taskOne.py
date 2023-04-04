@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 # data
 url = 'https://covid.ourworldindata.org/data/owid-covid-data.csv'
 df = pd.read_csv(url)
-countries = ['Mexico', 'France', 'India']
+countries = ['Mexico', 'France', 'India','China','Brazil', 'Pakistan', 'Germany']
 df = df[df['location'].isin(countries)]
 
 # to date format
@@ -44,7 +44,8 @@ else:
         df[metric_col] = df.groupby('location')[metric_col].rolling(7).mean().reset_index(0, drop=True)
 
 #country = st.sidebar.selectbox('Select a country', df['location'].unique())
-country = st.sidebar.selectbox('Select a country', ['Mexico', 'France', 'India'])
+#country = st.sidebar.selectbox('Select a country', ['Mexico', 'France', 'India'])
+country = st.sidebar.multiselect("Select countries", df['location'].unique(), default=countries)
 
 date_range = st.sidebar.date_input('Select a date range', [df['date'].min(), df['date'].max()])
 start_date = pd.to_datetime(date_range[0])
@@ -52,15 +53,32 @@ end_date = pd.to_datetime(date_range[1])
 
 min_date = df['date'].min().date()
 max_date = df['date'].max().date()
-start_date, end_date = st.sidebar.select_slider('Select a date range', options=pd.date_range(start=min_date, end=max_date, freq='D'), value=(min_date, max_date))
+#start_date, end_date = st.sidebar.select_slider('Select a date range', options=pd.date_range(start=min_date, end=max_date, freq='D'), value=(min_date, max_date))
+#start_date = start_date
+#end_date = end_date
 
 # Filter the data based on the selected metric, country, and date range
-filtered_data = df[(df['location'] == country) & (df['date'] >= start_date) & (df['date'] <= end_date)][['date', metric_col]]
+#filtered_data = df[(df['location'].isin(countries)) & (df['date'] >= start_date) & (df['date'] <= end_date)][['date', metric_col]]
+
+# Graph for one country
+##fig = go.Figure()
+##fig.add_trace(go.Scatter(x=filtered_data['date'], y=filtered_data[metric_col], mode='lines', name=title))
+##fig.update_layout(title=title + ' in ' + country)
+##st.plotly_chart(fig)
+
+## Graph multiple countries
+data = df[(df['location'].isin(countries)) & (df['date'] >= start_date) & (df['date'] <= end_date)]
 
 # Create the graph using Plotly
 fig = go.Figure()
-fig.add_trace(go.Scatter(x=filtered_data['date'], y=filtered_data[metric_col], mode='lines', name=title))
-fig.update_layout(title=title + ' in ' + country)
+
+for country in countries:
+    filtered_data = data[data['location'] == country][['date', metric_col]]
+    fig.add_trace(go.Scatter(x=filtered_data['date'], y=filtered_data[metric_col], mode='lines', name=country))
+
+fig.update_layout(title=title + ' in ' + ', '.join(countries))
+fig.update_xaxes(title_text='Date')
+fig.update_yaxes(title_text=title)
 st.plotly_chart(fig)
 
 # Crypto monthly data
