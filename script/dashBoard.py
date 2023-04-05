@@ -1,80 +1,95 @@
+# imports
 import streamlit as st
 import pandas as pd
-#import plotly.express as px
 import plotly
 import plotly.graph_objects as go
 
-# data
+
+################################################################################
+# global variable and initialisation
 url = 'https://covid.ourworldindata.org/data/owid-covid-data.csv'
 df = pd.read_csv(url)
-countries = ['Mexico', 'France', 'India','China','Brazil', 'Pakistan', 'Germany']
-df = df[df['location'].isin(countries)]
-
-# to date format
+df = df[~df['continent'].isnull()]
+df = df[~df['location'].isnull()]
 df['date'] = pd.to_datetime(df['date'])
+selectedCountries= ["France"]
+date = [df[df.location.isin(selectedCountries)].date.min(),df[df.location.isin(selectedCountries)].date.max()]
+dataType = "Raw"
+variables= ["new_cases"]
+dataTypeDict = {"Raw":["new_cases", "new_deaths"], "Total":["total_cases", "total_deaths"], "7-day Rolling Average":["new_cases_smoothed_per_million", "new_deaths_smoothed_per_million"] }
 
-# title
+################################################################################
+# functions
+
+# function getCountryList
+# this function return as a python list the unique country in
+# the dataframe (if a location column exist)
+# @param,
+# @df, the dataframe to search in
+# @countryColumn , name of the column that contains the country info, "location" by default
+# @return, the list of unique country found or a default country list if the countryColumn  is not found
+def getCountryList(df, countryColumn = "location"):
+    if countryColumn  in df.columns:
+        return df[countryColumn ].unique().tolist()
+    else:
+        return ["France", "Mexico", "India"] 
+
+
+# function getData,
+# this function return a filtered dataframe, filtered according to the parameter
+# @param,
+# @df, the dataframe to search in
+# @countries, the list of countries to look for
+# @variableCol, list of column name to select
+# @start_date, the minimal date to filter
+# @end_date, the maximum date to filter
+@return, the filtered dataframe
+def getData(data, countries, variableCol, start_date, end_date):
+    start_date = pd.to_datetime(start_date)
+    end_date= pd.to_datetime(end_date)
+    data = data[(data.location.isin(countries)) & (data.date >= start_date) & (data.date <= end_date)]
+    return data
+# function buildGraph,
+# this function will retreave the data we want according to the streamlit interractable object
+# and then plot the graph accordingly
+# this function is used as a call back function for the modification of the streamlit interractable object
+def buildGraph():
+    fig = go.Figure()
+    data = getData(df, selectedCountries, variables, date[0], date[1])
+    for country in selectedCountries:
+        filteredData = data[data.location == country]
+        for var in variables:
+            if dataType == "7-day Rolling Average":
+                filteredData[var] = filteredData.groupby('location')[var].rolling(7).mean().reset_index(0, drop=True)
+
+
+            fig.add_trace(go.Scatter(x=filteredData['date'], y=filteredData[var], mode='lines', name=country))
+    title = "".join([s.replace("_", " ") for s in variables])
+    fig.update_layout(title=title + ' in ' + ', '.join(selectedCountries))
+    fig.update_xaxes(title_text='Date')
+    fig.update_yaxes(title_text=title)
+    st.plotly_chart(fig)
+
+
+
+################################################################################
+# building the dashboard interface
+
+#setting the title
 st.title('COVID-19 Cases and Deaths')
+# setting the interractable elements and their labels
+# setting the country selector
+st.sidebar.subheader("Select countries:")
+selectedCountries = st.sidebar.multiselect("Select countries", getCountryList(df), default= selectedCountries, on_change= buildGraph())
+# setting the date selector
+st.sidebar.subheader("Select date range:")
+date = st.sidebar.date_input('Select a date range', [df.date.min(), df.date.max()], min_value= df.date.min(), max_value= df.date.max(), on_change= buildGraph())
+st.write(date, )
 
-# Add a filter
-metric = st.sidebar.selectbox('Select a metric', ['Cases', 'Deaths'])
-data_type = st.sidebar.selectbox('Select a data type', ['Raw', 'Total', '7-day Rolling Average'])
-
-if metric == 'Cases':
-    if data_type == 'Raw':
-        metric_col = 'new_cases'
-        title = 'New Cases'
-    elif data_type == 'Total':
-        metric_col = 'total_cases'
-        title = 'Total Cases'
-    elif data_type == '7-day Rolling Average':
-        metric_col = 'new_cases_smoothed_per_million'
-        title = '7-day Rolling Average of New Cases'
-        df[metric_col] = df.groupby('location')[metric_col].rolling(7).mean().reset_index(0, drop=True)
-else:
-    if data_type == 'Raw':
-        metric_col = 'new_deaths'
-        title = 'New Deaths'
-    elif data_type == 'Total':
-        metric_col = 'total_deaths'
-        title = 'Total Deaths'
-    elif data_type == '7-day Rolling Average':
-        metric_col = 'new_deaths_smoothed_per_million'
-        title = '7-day Rolling Average of New Deaths'
-        df[metric_col] = df.groupby('location')[metric_col].rolling(7).mean().reset_index(0, drop=True)
-
-#country = st.sidebar.selectbox('Select a country', df['location'].unique())
-#country = st.sidebar.selectbox('Select a country', ['Mexico', 'France', 'India'])
-country = st.sidebar.multiselect("Select countries", df['location'].unique(), default=countries)
-
-date_range = st.sidebar.date_input('Select a date range', [df['date'].min(), df['date'].max()])
-start_date = pd.to_datetime(date_range[0])
-end_date = pd.to_datetime(date_range[1])
-
-min_date = df['date'].min().date()
-max_date = df['date'].max().date()
-#start_date, end_date = st.sidebar.select_slider('Select a date range', options=pd.date_range(start=min_date, end=max_date, freq='D'), value=(min_date, max_date))
-#start_date = start_date
-#end_date = end_date
-
-# Filter the data based on the selected metric, country, and date range
-#filtered_data = df[(df['location'].isin(countries)) & (df['date'] >= start_date) & (df['date'] <= end_date)][['date', metric_col]]
-
-# Graph for one country
-##fig = go.Figure()
-##fig.add_trace(go.Scatter(x=filtered_data['date'], y=filtered_data[metric_col], mode='lines', name=title))
-##fig.update_layout(title=title + ' in ' + country)
-##st.plotly_chart(fig)
-
-## Graph multiple countries
-data = df[(df['location'].isin(countries)) & (df['date'] >= start_date) & (df['date'] <= end_date)]
-
-# Create the graph using Plotly
-fig = go.Figure()
-
-for country in countries:
-    filtered_data = data[data['location'] == country][['date', metric_col]]
-    fig.add_trace(go.Scatter(x=filtered_data['date'], y=filtered_data[metric_col], mode='lines', name=country))
-
-fig.update_layout(title=title + ' in ' + ', '.join(countries))
-st.plotly_chart(fig)
+# setting the data type selector
+st.sidebar.subheader("Select type of variable to plot:")
+dataType = st.sidebar.selectbox('Select a data type', dataTypeDict.keys())
+# setting the variable selector,
+# the option will change dinamically in function of the data type selected
+st.sidebar.subheader("Select variable to plot:")
+variables= st.sidebar.multiselect("Variables:", dataTypeDict[dataType], default=dataTypeDict[dataType ][0], on_change= buildGraph())
