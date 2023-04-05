@@ -43,7 +43,7 @@ def getCountryList(df, countryColumn = "location"):
 # @variableCol, list of column name to select
 # @start_date, the minimal date to filter
 # @end_date, the maximum date to filter
-@return, the filtered dataframe
+#@return, the filtered dataframe
 def getData(data, countries, variableCol, start_date, end_date):
     start_date = pd.to_datetime(start_date)
     end_date= pd.to_datetime(end_date)
