@@ -1,0 +1,66 @@
+{
+    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+    "@type": "SoftwareSourceCode",
+    "license": "https://spdx.org/licenses/MIT",
+    "codeRepository": "https://github.com/emilioes/dashboardteam3",
+    "dateCreated": "2023-04-04",
+    "issueTracker": "https://github.com/emilioes/dashboardteam3/issues",
+    "name": "COVID-19 DashboardTeam3",
+    "description": "Our software computes the Covid-19 data in a dashboard with insightful visualizations. This project is entitled to the coursework in Open Source 2023 by Learning Planet Institute, Université Paris Cité",
+    "applicationCategory": "Open Source",
+    "keywords": [
+        "Covid-19",
+        "Dashboard"
+    ],
+    "programmingLanguage": [
+        "Python3"
+    ],
+    "runtimePlatform": [
+        "Streamlit Cloud"
+    ],
+    "operatingSystem": [
+        "Windows",
+        "Linux",
+        "MacOS"
+    ],
+    "softwareRequirements": [
+        "Python>=3.4",
+        "numpy>=1.23.5",
+        "pandas>=1.5.3",
+        "streamlit>=1.20.0",
+        "matplotlib>=3.7.1",
+        "plotly>=5.13.1"
+    ],
+    "author": [
+        {
+            "@type": "Person",
+            "givenName": "Emilio",
+            "familyName": "Espinosa",
+            "email": "emilio.espinosasanchez@cri-paris.org",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Master in Digital Sciences, Université Paris Cité"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Alexis",
+            "familyName": "Culpin",
+            "email": "alexis.culpin@cri-paris.org",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Master in Digital Sciences, Université Paris Cité"
+            }
+        },
+        {
+            "@type": "Person",
+            "givenName": "Romaric",
+            "familyName": "Perthus Sallustre",
+            "email": "romaric.sallustre@cri-paris.org",
+            "affiliation": {
+                "@type": "Organization",
+                "name": "Master in Digital Sciences, Université Paris Cité"
+            }
+        }
+    ]
+}
