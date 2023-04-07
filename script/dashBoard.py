@@ -3,20 +3,25 @@ import streamlit as st
 import pandas as pd
 import plotly
 import plotly.graph_objects as go
-
+import os
 
 ################################################################################
 # global variable and initialisation
 url = 'https://covid.ourworldindata.org/data/owid-covid-data.csv'
-df = pd.read_csv(url)
+if not os.path.isfile("covid-data.csv"):
+
+    df = pd.read_csv(url)
+    df.to_csv("covid-data.csv", sep=",", index=False)
+
+else: df = pd.read_csv("covid-data.csv")
 df = df[~df['continent'].isnull()]
 df = df[~df['location'].isnull()]
 df['date'] = pd.to_datetime(df['date'])
 selectedCountries= ["France"]
 date = [df[df.location.isin(selectedCountries)].date.min(),df[df.location.isin(selectedCountries)].date.max()]
 dataType = "Raw"
-variables= ["new_cases"]
-dataTypeDict = {"Raw":["new_cases", "new_deaths"], "Total":["total_cases", "total_deaths"], "7-day Rolling Average":["new_cases_smoothed_per_million", "new_deaths_smoothed_per_million"] }
+variables= "new cases smoothed per million"
+dataTypeDict = {"Raw":["new cases smoothed per million", "new deaths smoothed per million"], "Cumulative":["total cases per million", "total deaths per million"], "7-day Rolling Average":["new cases smoothed per million", "new deaths smoothed per million"] }
 
 ################################################################################
 # functions
@@ -49,6 +54,8 @@ def getData(data, countries, variableCol, start_date, end_date):
     end_date= pd.to_datetime(end_date)
     data = data[(data.location.isin(countries)) & (data.date >= start_date) & (data.date <= end_date)]
     return data
+
+
 # function buildGraph,
 # this function will retreave the data we want according to the streamlit interractable object
 # and then plot the graph accordingly
@@ -58,13 +65,13 @@ def buildGraph():
     data = getData(df, selectedCountries, variables, date[0], date[1])
     for country in selectedCountries:
         filteredData = data[data.location == country]
-        for var in variables:
-            if dataType == "7-day Rolling Average":
-                filteredData[var] = filteredData.groupby('location')[var].rolling(7).mean().reset_index(0, drop=True)
+        col = variables.replace(" ", "_")
+        if dataType == "7-day Rolling Average":
+            filteredData[col] = filteredData.groupby('location')[col].rolling(7).mean().reset_index(0, drop=True)
 
 
-            fig.add_trace(go.Scatter(x=filteredData['date'], y=filteredData[var], mode='lines', name=country))
-    title = "".join([s.replace("_", " ") for s in variables])
+        fig.add_trace(go.Scatter(x=filteredData['date'], y=filteredData[col], mode='lines', name=country))
+    title = str.upper(variables[0]) + variables[1:]
     fig.update_layout(title=title + ' in ' + ', '.join(selectedCountries))
     fig.update_xaxes(title_text='Date')
     fig.update_yaxes(title_text=title)
@@ -84,7 +91,7 @@ selectedCountries = st.sidebar.multiselect("Select countries", getCountryList(df
 # setting the date selector
 st.sidebar.subheader("Select date range:")
 date = st.sidebar.date_input('Select a date range', [df.date.min(), df.date.max()], min_value= df.date.min(), max_value= df.date.max())
-st.write(date, )
+# st.write(date, )
 
 # setting the data type selector
 st.sidebar.subheader("Select type of variable to plot:")
@@ -92,6 +99,6 @@ dataType = st.sidebar.selectbox('Select a data type', dataTypeDict.keys())
 # setting the variable selector,
 # the option will change dinamically in function of the data type selected
 st.sidebar.subheader("Select variable to plot:")
-variables= st.sidebar.multiselect("Variables:", dataTypeDict[dataType], default=dataTypeDict[dataType ][0])
+variables= st.sidebar.selectbox("Variables:", dataTypeDict[dataType])
 
 buildGraph()
