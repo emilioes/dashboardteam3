@@ -80,10 +80,10 @@ st.title('COVID-19 Cases and Deaths')
 # setting the interractable elements and their labels
 # setting the country selector
 st.sidebar.subheader("Select countries:")
-selectedCountries = st.sidebar.multiselect("Select countries", getCountryList(df), default= selectedCountries, on_change= buildGraph())
+selectedCountries = st.sidebar.multiselect("Select countries", getCountryList(df), default= selectedCountries)
 # setting the date selector
 st.sidebar.subheader("Select date range:")
-date = st.sidebar.date_input('Select a date range', [df.date.min(), df.date.max()], min_value= df.date.min(), max_value= df.date.max(), on_change= buildGraph())
+date = st.sidebar.date_input('Select a date range', [df.date.min(), df.date.max()], min_value= df.date.min(), max_value= df.date.max())
 st.write(date, )
 
 # setting the data type selector
@@ -92,4 +92,6 @@ dataType = st.sidebar.selectbox('Select a data type', dataTypeDict.keys())
 # setting the variable selector,
 # the option will change dinamically in function of the data type selected
 st.sidebar.subheader("Select variable to plot:")
-variables= st.sidebar.multiselect("Variables:", dataTypeDict[dataType], default=dataTypeDict[dataType ][0], on_change= buildGraph())
+variables= st.sidebar.multiselect("Variables:", dataTypeDict[dataType], default=dataTypeDict[dataType ][0])
+
+buildGraph()
