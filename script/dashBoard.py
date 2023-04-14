@@ -61,7 +61,7 @@ def getData(data, countries, variableCol, start_date, end_date):
 # this function will retreave the data we want according to the streamlit interractable object
 # and then plot the graph accordingly
 # this function is used as a call back function for the modification of the streamlit interractable object
-def buildGraph():
+def buildGraph(use_peak_detection=False):
     fig = go.Figure()
     data = getData(df, selectedCountries, variables, date[0], date[1])
     for country in selectedCountries:
@@ -72,7 +72,7 @@ def buildGraph():
         fig.add_trace(go.Scatter(x=filteredData['date'], y=filteredData[col], mode='lines', name=country))
 
         # Calculate the first derivative of cumulative data
-        if dataType == "Cumulative":
+        if dataType == "Cumulative" and use_peak_detection:
             y = filteredData[col]
             x = np.arange(len(y))
             dy = np.gradient(y, x)*20
@@ -108,4 +108,9 @@ dataType = st.sidebar.selectbox('Select a data type', dataTypeDict.keys())
 st.sidebar.subheader("Select variable to plot:")
 variables= st.sidebar.selectbox("Variables:", dataTypeDict[dataType])
 
-buildGraph()
+# setting the peak detection checkbox
+st.sidebar.subheader("Peak Detection")
+use_peak_detection = st.sidebar.checkbox("Enable peak detection")
+buildGraph(use_peak_detection)
+
+#buildGraph()
