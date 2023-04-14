@@ -1,5 +1,8 @@
 # Covid-19 Dashboard
 
+[![SWH](https://archive.softwareheritage.org/badge/swh:1:dir:3e7f303437d4f680dbd09990cf3d630947a2e487/)][def]
+
+[def]: https://archive.softwareheritage.org/swh:1:dir:3e7f303437d4f680dbd09990cf3d630947a2e487;origin=https://github.com/emilioes/dashboardteam3;visit=swh:1:snp:9a5b141fcd7dd386ca7167f86ccae6b014492187;anchor=swh:1:rev:83024e76fa1e2282e51c22622ac23f947b26a51c
 
 ## Collaborators
 - Romaric Sallustre
@@ -115,7 +118,3 @@ Feel free to fork the project, and make changes and pull request.
 
 ## License
 This project is under <a href="https://github.com/emilioes/dashboardteam3/blob/main/LICENSE" target="_new">MIT</a> licence.
-
-[![SWH](https://archive.softwareheritage.org/badge/swh:1:dir:3e7f303437d4f680dbd09990cf3d630947a2e487/)][def]
-
-[def]: https://archive.softwareheritage.org/swh:1:dir:3e7f303437d4f680dbd09990cf3d630947a2e487;origin=https://github.com/emilioes/dashboardteam3;visit=swh:1:snp:9a5b141fcd7dd386ca7167f86ccae6b014492187;anchor=swh:1:rev:83024e76fa1e2282e51c22622ac23f947b26a51c
