@@ -4,6 +4,7 @@ import pandas as pd
 import plotly
 import plotly.graph_objects as go
 import os
+import numpy as np
 
 ################################################################################
 # global variable and initialisation
@@ -68,9 +69,15 @@ def buildGraph():
         col = variables.replace(" ", "_")
         if dataType == "7-day Rolling Average":
             filteredData[col] = filteredData.groupby('location')[col].rolling(7).mean().reset_index(0, drop=True)
-
-
         fig.add_trace(go.Scatter(x=filteredData['date'], y=filteredData[col], mode='lines', name=country))
+
+        # Calculate the first derivative of cumulative data
+        if dataType == "Cumulative":
+            y = filteredData[col]
+            x = np.arange(len(y))
+            dy = np.gradient(y, x)*20
+            fig.add_trace(go.Scatter(x=filteredData['date'], y=dy, mode='lines', name=f"{country} (1st derivative)"))
+
     title = str.upper(variables[0]) + variables[1:]
     fig.update_layout(title=title + ' in ' + ', '.join(selectedCountries))
     fig.update_xaxes(title_text='Date')
