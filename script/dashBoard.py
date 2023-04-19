@@ -21,8 +21,10 @@ df['date'] = pd.to_datetime(df['date'])
 selectedCountries= ["France"]
 date = [df[df.location.isin(selectedCountries)].date.min(),df[df.location.isin(selectedCountries)].date.max()]
 dataType = "Raw"
-variables= "new cases smoothed per million"
-dataTypeDict = {"Raw":["new cases smoothed per million", "new deaths smoothed per million"], "Cumulative":["total cases per million", "total deaths per million"], "7-day Rolling Average":["new cases smoothed per million", "new deaths smoothed per million"] }
+variables= "Cases"
+# dataTypeDict = {"Raw":{"cases":"new_cases_smoothed_per_million", "deathes":"new_deaths_smoothed_per_million"}, "Cumulative":["total cases per million", "total deaths per million"], "7-day Rolling Average":["new cases smoothed per million", "new deaths smoothed per million"] }
+dataTypeDict={"Raw":{"Cases":"new_cases_smoothed_per_million", "Deaths":"new_deaths_smoothed_per_million"}, "Cumulative":{"Cases":"total_cases_per_million", "Deaths":"total_deaths_per_million"},"7-day Rolling Average":{"Cases":"new_cases_smoothed_per_million","Deaths":"new_deaths_smoothed_per_million"}}
+
 
 ################################################################################
 # functions
@@ -64,19 +66,20 @@ def getData(data, countries, variableCol, start_date, end_date):
 def buildGraph(use_peak_detection=False):
     fig = go.Figure()
     data = getData(df, selectedCountries, variables, date[0], date[1])
-    for country in selectedCountries:
+    for i, country in enumerate(selectedCountries):
         filteredData = data[data.location == country]
-        col = variables.replace(" ", "_")
+        col = dataTypeDict[dataType][variables]
         if dataType == "7-day Rolling Average":
             filteredData[col] = filteredData.groupby('location')[col].rolling(7).mean().reset_index(0, drop=True)
         fig.add_trace(go.Scatter(x=filteredData['date'], y=filteredData[col], mode='lines', name=country))
 
         # Calculate the first derivative of cumulative data
-        if dataType == "Cumulative" and use_peak_detection:
+        if dataType == "Cumulative" and use_peak_detection and i ==0:
             y = filteredData[col]
             x = np.arange(len(y))
-            dy = np.gradient(y, x)*20
-            fig.add_trace(go.Scatter(x=filteredData['date'], y=dy, mode='lines', name=f"{country} (1st derivative)"))
+            # we compute the numerical derivative to find the peaks, we multiply by 20 to make them more visible on the graph
+            peaks = np.gradient(y, x)*20
+            fig.add_trace(go.Scatter(x=filteredData['date'], y=peaks, mode='lines', name=f"{country} (1st derivative)"))
 
     title = str.upper(variables[0]) + variables[1:]
     fig.update_layout(title=title + ' in ' + ', '.join(selectedCountries))
@@ -109,8 +112,11 @@ st.sidebar.subheader("Select variable to plot:")
 variables= st.sidebar.selectbox("Variables:", dataTypeDict[dataType])
 
 # setting the peak detection checkbox
-st.sidebar.subheader("Peak Detection")
-use_peak_detection = st.sidebar.checkbox("Enable peak detection")
-buildGraph(use_peak_detection)
+if dataType == "Cumulative" :
+    st.sidebar.subheader("Peak Detection")
+    use_peak_detection = st.sidebar.checkbox("Enable peak detection")
+else:
+    use_peak_detection = False
 
-#buildGraph()
+# calling the function to plot our variables
+buildGraph(use_peak_detection)
