@@ -52,10 +52,10 @@ def getCountryList(df, countryColumn = "location"):
 # @start_date, the minimal date to filter
 # @end_date, the maximum date to filter
 #@return, the filtered dataframe
-def getData(data, countries, variableCol, start_date, end_date):
-    start_date = pd.to_datetime(start_date)
-    end_date= pd.to_datetime(end_date)
-    data = data[(data.location.isin(countries)) & (data.date >= start_date) & (data.date <= end_date)]
+def getData(data, countries, variableCol, startDate, endDate):
+    startDate = pd.to_datetime(startDate)
+    endDate= pd.to_datetime(endDate)
+    data = data[(data.location.isin(countries)) & (data.date >= startDate) & (data.date <= endDate)]
     return data
 
 
@@ -109,7 +109,7 @@ dataType = st.sidebar.selectbox('Select a data type', dataTypeDict.keys())
 # setting the variable selector,
 # the option will change dinamically in function of the data type selected
 st.sidebar.subheader("Select variable to plot:")
-variables= st.sidebar.selectbox("Variables:", dataTypeDict[dataType])
+variables= st.sidebar.selectbox("Variables:", dataTypeDict[dataType].keys())
 
 # setting the peak detection checkbox
 if dataType == "Cumulative" :
